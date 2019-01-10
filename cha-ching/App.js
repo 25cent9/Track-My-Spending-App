@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import PurchaseForm from './src/components/PurchseForm'
+
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={require('./assets/julius.jpg')} />
-        <Text style={styles.header}>"You don't pay taxes - they take taxes."</Text>
+        <Image source={require('./assets/julius.jpg')} style={styles.terryCrews}/>
+        <Text style={styles.terryCrews}>"You don't pay taxes - they take taxes."</Text>
         <PurchaseForm />
       </View>
     );
@@ -22,4 +23,8 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
   },
+  terryCrews: {
+    fontSize: 8,
+    marginBottom: 40,
+  }
 });

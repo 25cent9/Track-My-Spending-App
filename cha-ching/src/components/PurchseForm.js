@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Picker } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Picker, Button } from 'react-native';
 
 export default class App extends React.Component {
   state={}
@@ -10,7 +10,8 @@ export default class App extends React.Component {
           style={styles.textinput}
           placeholder="Item Purchased"
           underlineColorAndroid='transparent'
-          onChangeText={(item)=>this.setState({item})}/>
+          onChangeText={(item)=>this.setState({item})} 
+          autoCapitalize={'words'}/>
         <TextInput
           style={styles.textinput}
           placeholder="Price"
@@ -28,38 +29,39 @@ export default class App extends React.Component {
           <Picker.Item label='Misc' value='misc' />
           <Picker.Item label='Errands' value='errands' />
         </Picker>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btntxt} onPress={this.sendData.bind(this)}>Submit</Text>
-        </TouchableOpacity>
+        <Button style={styles.button}
+          title='Submit'
+          onPress={this.sendData.bind(this)}
+          color='#255d00'
+          />
       </View>
     );
   }
 
   sendData(){
     if (this.state.price && this.state.category && this.state.item) {
-      console.log(this.state.price);
-      console.log(this.state.item);
-      console.log(this.state.category);
+      var formData = new FormData;
+      formData.append('bought_item', this.state.item);
+      formData.append('price', this.state.price);
+      formData.append('category', this.state.category);
+      fetch('http://DOMAIN', {
+        method: 'POST',
+        body: formData,
+      })
+      .then((resp) => resp.json())
+      .then((respJson) => {
+        console.log(respJson)
+      })
+      .catch((error) => {
+        console.log(error)
+      });
     }
   }
 }
 
-// ToDo: Netowrking and GET requets 
-
-function sendMoreData() {
-  console.log("I'm sending the data now!")
-}
 const styles = StyleSheet.create({
   purchaseForm: {
     alignSelf: 'stretch',
-  },
-  header: {
-    fontSize: 34,
-    color: '#000',
-    paddingBottom: 10,
-    marginBottom: 40,
-    borderBottomColor: '#199',
-    borderBottomWidth: 1,
   },
   textinput: {
     alignSelf: 'stretch',
@@ -69,15 +71,4 @@ const styles = StyleSheet.create({
     borderBottomColor: '#888',
     borderBottomWidth: 1,
   },
-  button: {
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#255d00',
-    marginTop: 30, 
-  },
-  btntxt: {
-    color: '#fff',
-    fontWeight: 'bold',
-  }
 });
