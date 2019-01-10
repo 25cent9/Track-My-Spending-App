@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Picker, Button } from 'react-native';
+import Config from 'react-native-config'
 
 export default class App extends React.Component {
   state={}
@@ -39,6 +40,9 @@ export default class App extends React.Component {
   }
 
   sendData(){
+    console.log('I;m here')
+    console.log(Config.APP_NAME)
+    console.log(Config)
     if (this.state.price && this.state.category && this.state.item) {
       var formData = new FormData;
       formData.append('bought_item', this.state.item);
