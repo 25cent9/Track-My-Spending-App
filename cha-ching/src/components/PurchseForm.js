@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Picker, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Picker, Button, ToastAndroid } from 'react-native';
 import Config from 'react-native-config'
 
 export default class App extends React.Component {
-  state={}
+  state={
+    submission_key: KEY,
+  };
   render() {
     return (
       <View style={styles.purchaseForm}>
@@ -12,23 +14,27 @@ export default class App extends React.Component {
           placeholder="Item Purchased"
           underlineColorAndroid='transparent'
           onChangeText={(item)=>this.setState({item})} 
-          autoCapitalize={'words'}/>
+          autoCapitalize={'words'}
+          value={this.state.item}/>
         <TextInput
           style={styles.textinput}
           placeholder="Price"
           keyboardType='number-pad'
           underlineColorAndroid='transparent' 
-          onChangeText={(price)=>this.setState({price})}/>
+          onChangeText={(price)=>this.setState({price})}
+          value={this.state.price}
+          />
         <Picker 
           selectedValue={this.state.category}
           onValueChange={(itemValue, itemIndex) => 
-          this.setState({category: itemValue})}>
-          <Picker.Item label='Food' value='food' /> 
-          <Picker.Item label='Car' value='car' /> 
-          <Picker.Item label='Gas' value='gas' />
-          <Picker.Item label='Clothes' value='clothes' />
-          <Picker.Item label='Misc' value='misc' />
-          <Picker.Item label='Errands' value='errands' />
+          this.setState({category: itemValue})}
+          value={this.state.category}>
+          <Picker.Item label='Food' value='Food' /> 
+          <Picker.Item label='Car' value='Car' /> 
+          <Picker.Item label='Gas' value='Gas' />
+          <Picker.Item label='Clothes' value='Clothes' />
+          <Picker.Item label='Misc' value='Misc' />
+          <Picker.Item label='Errands' value='Errands' />
         </Picker>
         <Button style={styles.button}
           title='Submit'
@@ -40,21 +46,28 @@ export default class App extends React.Component {
   }
 
   sendData(){
-    console.log('I;m here')
-    console.log(Config.APP_NAME)
-    console.log(Config)
     if (this.state.price && this.state.category && this.state.item) {
       var formData = new FormData;
       formData.append('bought_item', this.state.item);
       formData.append('price', this.state.price);
       formData.append('category', this.state.category);
-      fetch('http://DOMAIN', {
+      formData.append('sub_key', this.state.submission_key);
+      fetch(DOMAIN, {
         method: 'POST',
         body: formData,
       })
       .then((resp) => resp.json())
       .then((respJson) => {
-        console.log(respJson)
+        if (respJson.success == 'True'){
+          ToastAndroid.show('Submission complete', ToastAndroid.SHORT)
+          this.setState({
+            item: '',
+            price: '',
+            category: 'Food',
+          })
+        } else {
+          ToastAndroid.show('Fail, please try again', ToastAndroid.SHORT)
+        }
       })
       .catch((error) => {
         console.log(error)
