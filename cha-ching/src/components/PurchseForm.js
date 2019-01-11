@@ -58,7 +58,7 @@ export default class App extends React.Component {
       })
       .then((resp) => resp.json())
       .then((respJson) => {
-        if (respJson.success == 'True'){
+        if (respJson["success"] === true){
           ToastAndroid.show('Submission complete', ToastAndroid.SHORT)
           this.setState({
             item: '',
